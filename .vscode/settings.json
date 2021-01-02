@@ -8,7 +8,6 @@
   "cmake.configureOnOpen": false,
   "C_Cpp.intelliSenseEngineFallback": "Enabled",
   "idf.adapterTargetName": "esp32",
-  "idf.port": "/dev/cu.usbserial-02025E3D",
   "files.associations": {
     "esp_vfs.h": "c",
     "esp_vfs_fat.h": "c",
@@ -73,6 +72,11 @@
     "projdefs.h": "c",
     "test_utils.h": "c",
     "ca_buzzer.h": "c",
-    "ca_ledstrip.h": "c"
+    "ca_ledstrip.h": "c",
+    "string_view": "c",
+    "array": "c",
+    "initializer_list": "c",
+    "utility": "c",
+    "ca_race_director.h": "c"
   }
 }

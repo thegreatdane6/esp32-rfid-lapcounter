@@ -4,16 +4,18 @@
 #include <esp_event_base.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-enum {
-    CA_RC522_EVENT_UPDATE
-};
+    enum
+    {
+        CA_RC522_EVENT_TRIGGER
+    };
 
-ESP_EVENT_DECLARE_BASE(CA_RC522_EVENT);
+    ESP_EVENT_DECLARE_BASE(CA_RC522_EVENT);
 
-void ca_rc522_setup(void);
+    void ca_rc522_setup(void);
 #ifdef __cplusplus
 }
 #endif
