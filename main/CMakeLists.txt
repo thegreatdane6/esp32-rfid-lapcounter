@@ -1,0 +1,2 @@
+idf_component_register(SRCS "ca_buzzer.c" "ca_ledstrip.cpp" "ca_button.c" "ca_rc522.c" "main.c" "ca_sntp.c" "ca_storage.c" "ca_network.c" "ca_config.c" "ca_ota.c" "ca_provision.c"
+                       PRIV_INCLUDE_DIRS "private_include")

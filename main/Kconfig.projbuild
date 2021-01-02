@@ -1,0 +1,101 @@
+menu "RFID Lap Counter Configuration"
+
+    config ESP32_RFID_LAP_COUNTER_FATFS_ENABLED
+        bool "Enable FATFS"
+        default "n"
+        help
+            Enables support for FATFS storage
+
+    
+    config ESP32_RFID_LAP_COUNTER_TIMEZONE_DEFAULT
+        string "Default timezone"
+        default "Europe/Berlin"
+        help
+            Sets default timezone if does not exist in NVS flash
+
+    menu "SNTP Configuration"
+
+        config ESP32_RFID_LAP_COUNTER_SNTP_ENABLED
+            bool "Enable SNTP"
+            default "y"
+            help
+                Enables SNTP for accurate time synchronization
+
+        choice ESP32_RFID_LAP_COUNTER_SNTP_TIME_SYNC_METHOD
+            prompt "Time synchronization method"
+            depends on ESP32_RFID_LAP_COUNTER_SNTP_ENABLED
+            default ESP32_RFID_LAP_COUNTER_SNTP_TIME_SYNC_METHOD_IMMED
+            help
+                Time synchronization method.
+
+            config ESP32_RFID_LAP_COUNTER_SNTP_TIME_SYNC_METHOD_IMMED
+                bool "update time immediately when received"
+            config ESP32_RFID_LAP_COUNTER_SNTP_TIME_SYNC_METHOD_SMOOTH
+                bool "update time with smooth method (adjtime)"
+        endchoice
+
+    endmenu
+
+    menu "Provisioning Configuration"
+
+        config ESP32_RFID_LAP_COUNTER_PROV_TRANSPORT_ENABLED
+            bool "Enable Provisioning Transport"
+            default "y"
+            help
+                Enables provisioning support
+
+        choice ESP32_RFID_LAP_COUNTER_PROV_TRANSPORT
+            bool "Provisioning Transport"
+            default ESP32_RFID_LAP_COUNTER_PROV_TRANSPORT_BLE
+            depends on ESP32_RFID_LAP_COUNTER_PROV_TRANSPORT_ENABLED
+            help
+                Wi-Fi provisioning component offers both, SoftAP and BLE transports. Only one can be choosen.
+
+            config ESP32_RFID_LAP_COUNTER_PROV_TRANSPORT_BLE
+                bool "BLE"
+                select BT_ENABLED
+                depends on IDF_TARGET_ESP32
+            config ESP32_RFID_LAP_COUNTER_PROV_TRANSPORT_SOFTAP
+                bool "Soft AP"
+        endchoice
+
+        config ESP32_RFID_LAP_COUNTER_PROV_SERVICE_NAME_PREFIX
+            string "Default service name prefix"
+            default "PROV_"
+            help
+                Sets default service name prefix
+
+        config ESP32_RFID_LAP_COUNTER_PROV_PROOF_OF_POSSESION_PREFIX
+            string "Default proof-of-possesion prefix"
+            default "lapcounter-"
+            help
+                Sets default proof-of-possesion prefix
+
+        config ESP32_RFID_LAP_COUNTER_PROV_SERVICE_KEY_ENABLED
+            bool "Enable authentication to the device"
+            default "n"
+            help
+                Enables provisioning support
+
+        choice ESP32_RFID_LAP_COUNTER_PROV_SERVICE_KEY
+            bool "Enable authentication to the device"
+            default ESP32_RFID_LAP_COUNTER_PROV_SERVICE_KEY_STATIC
+            depends on ESP32_RFID_LAP_COUNTER_PROV_SERVICE_KEY_ENABLED
+            help
+                Enables authentication to the device by generating random key
+            config ESP32_RFID_LAP_COUNTER_PROV_SERVICE_KEY_DYNAMIC
+                bool "Dynamic"
+            config ESP32_RFID_LAP_COUNTER_PROV_SERVICE_KEY_STATIC
+                bool "Static"
+        endchoice
+
+        config ESP32_RFID_LAP_COUNTER_PROV_SERVICE_KEY_STATIC_VALUE
+            string "Static value for the service key"
+            default "lapcounter-123"
+            depends on ESP32_RFID_LAP_COUNTER_PROV_SERVICE_KEY_ENABLED
+            depends on ESP32_RFID_LAP_COUNTER_PROV_SERVICE_KEY_STATIC
+            help
+                Set default value for the service key used in authentication with the device
+    
+    endmenu
+endmenu

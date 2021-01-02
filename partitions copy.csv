@@ -1,0 +1,28 @@
+# Name,     Type, SubType,  Offset,     Size
+
+# NVS key-value storage
+nvs,        data, nvs,      ,           16K
+
+# OTA data which stores information about the currently selected OTA app slot
+otadata,    data, ota,      ,           8K
+
+# PHY initialisation data
+phy_init,   data, phy,      ,           4K
+
+# Factory firmware
+factory,    app,  factory,  ,           1M
+
+# OTA slot: main
+ota_0,      0,    ota_0,    ,           1M
+
+# OTA slot: slave
+ota_1,      0,    ota_1,    ,           1M
+
+# Data
+storage,    data, fat,      ,           512K,
+
+# NVS encryption keys
+nvs_key,    data, nvs_keys, ,           4K
+
+# Coredump storage for debugging after release
+coredump,   data, coredump, ,           64K
