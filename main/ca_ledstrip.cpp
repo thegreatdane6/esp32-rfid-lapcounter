@@ -47,31 +47,44 @@ static void event_handler(void *arg, esp_event_base_t event_base, int event_id, 
 
         for (int i = 0; i < anim->length; i++)
         {
-            ca_ledstrip_animation_step_t *step = &anim->steps[i];
-            if (step->anim_type == CA_LEDSTRIP_ANIMATION_RESET)
-            {
-                reset_strip(false);
-            }
-            else
-            {
-                leds[step->id] = step->color;
-                if (step->span > 1)
-                {
-                    for (int i = 1; i < step->span; i++)
-                        leds[step->id + i] = step->color;
-                }
-            }
-
-            FastLED.show();
-
-            if (step->delay > 0)
-                vTaskDelay(step->delay);
+            ESP_ERROR_CHECK(esp_event_post(CA_LEDSTRIP_EVENT, CA_LEDSTRIP_EVENT_ANIMATE_STEP, &anim->steps[i], sizeof(ca_ledstrip_animation_step_t), portMAX_DELAY));
         }
 
-        free(anim->steps);
+        ESP_ERROR_CHECK(esp_event_post(CA_LEDSTRIP_EVENT, CA_LEDSTRIP_EVENT_ANIMATE_FINISH, anim, sizeof(ca_ledstrip_animation_t), portMAX_DELAY));
 
-        ESP_ERROR_CHECK(esp_event_post(CA_LEDSTRIP_EVENT, CA_LEDSTRIP_EVENT_ANIMATE_FINISH, NULL, 0, portMAX_DELAY));
+        break;
+    }
 
+    case CA_LEDSTRIP_EVENT_ANIMATE_STEP:
+    {
+        ca_ledstrip_animation_step_t *step = ((ca_ledstrip_animation_step_t *)event_data);
+        if (step->anim_type == CA_LEDSTRIP_ANIMATION_RESET)
+        {
+            reset_strip(false);
+        }
+        else
+        {
+            leds[step->id] = step->color;
+            if (step->span > 1)
+            {
+                for (int i = 1; i < step->span; i++)
+                    leds[step->id + i] = step->color;
+            }
+        }
+
+        FastLED.show();
+
+        if (step->delay > 0)
+            vTaskDelay(step->delay);
+
+        break;
+    }
+
+    case CA_LEDSTRIP_EVENT_ANIMATE_FINISH:
+    {
+        ca_ledstrip_animation_t *anim = (ca_ledstrip_animation_t *)event_data;
+        if (anim != NULL && anim->steps != NULL)
+            free(anim->steps);
         break;
     }
     }

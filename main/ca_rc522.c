@@ -70,5 +70,5 @@ void ca_rc522_setup(void)
 
 static void tag_handler(spi_device_handle_t handle, uint8_t *serial_no)
 {
-    ESP_ERROR_CHECK(esp_event_post(CA_RC522_EVENT, CA_RC522_EVENT_TRIGGER, serial_no, sizeof(uint8_t) * 5, portMAX_DELAY));
+    ESP_ERROR_CHECK(esp_event_post(CA_RC522_EVENT, CA_RC522_EVENT_TRIGGER, serial_no, 5, portMAX_DELAY));
 }

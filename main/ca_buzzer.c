@@ -7,6 +7,9 @@
 #include "ca_buzzer.h"
 
 ESP_EVENT_DEFINE_BASE(CA_BUZZER_EVENT);
+
+#define BUZZER_DEFAULT_DELAY (void *)(200 / portTICK_PERIOD_MS)
+
 static const char *TAG = "buzzer";
 static esp_timer_handle_t beep_timer;
 static bool timer_running = false;
@@ -20,7 +23,7 @@ void ca_buzzer_setup(void)
     const esp_timer_create_args_t timer_args = {
         .callback = timer_handler,
         .name = "Penis",
-        .arg = NULL,
+        .arg = BUZZER_DEFAULT_DELAY,
         .dispatch_method = ESP_TIMER_TASK,
     };
     ESP_ERROR_CHECK(esp_timer_create(&timer_args, &beep_timer));
@@ -48,7 +51,14 @@ static void event_handler(void *arg, esp_event_base_t event_base, int event_id, 
         }
         break;
     case CA_BUZZER_EVENT_BEEP:
-        timer_handler(NULL);
+        if (event_data != NULL)
+        {
+            timer_handler((void *)*(uint32_t *)event_data);
+        }
+        else
+        {
+            timer_handler(BUZZER_DEFAULT_DELAY);
+        }
         break;
     }
 }
@@ -56,6 +66,6 @@ static void event_handler(void *arg, esp_event_base_t event_base, int event_id, 
 static void timer_handler(void *arg)
 {
     gpio_set_level(GPIO_NUM_17, 1);
-    vTaskDelay(200 / portTICK_PERIOD_MS);
+    vTaskDelay((TickType_t)arg);
     gpio_set_level(GPIO_NUM_17, 0);
 }
